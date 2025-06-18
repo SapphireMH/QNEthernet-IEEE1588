@@ -20,6 +20,7 @@
 #include "lwip/prot/ethernet.h"
 #include "qnethernet/QNEthernetClient.h"
 #include "qnethernet/QNEthernetFrame.h"
+#include "qnethernet/QNEthernetIEEE1588.h"
 #include "qnethernet/QNEthernetServer.h"
 #include "qnethernet/QNEthernetUDP.h"
 #include "qnethernet/QNMDNS.h"

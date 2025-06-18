@@ -232,6 +232,8 @@ FLASHMEM void enet_deinit(void) {
 
   remove_netif();  // TODO: This also causes issues (see notes in enet_init())
 
+  enet_ieee1588_deinit();
+
   driver_deinit();
 }
 

@@ -34,8 +34,6 @@ lwIP release.
    6. [`MDNS`](#mdns)
    7. [`DNSClient`](#dnsclient)
    8. [Print utilities](#print-utilities)
-   9. [`operator bool()` and `explicit`](#operator-bool-and-explicit)
-   10. [Use of `errno`](#use-of-errno)
 3. [How to run](#how-to-run)
    1. [Concurrent use is not supported](#concurrent-use-is-not-supported)
    2. [How to move the stack forward and receive data](#how-to-move-the-stack-forward-and-receive-data)

@@ -13,6 +13,7 @@
 // C++ includes
 #include <cstddef>
 #include <cstdint>
+#include <ctime>
 #include <vector>
 
 #include <Stream.h>
@@ -218,10 +219,17 @@ class EthernetFrameClass final : public Stream, public internal::PrintfChecked {
   // Clears any outgoing packet and the incoming queue.
   void clear();
 
+  // Gets the IEEE 1588 timestamp for the received frame and assigns it to the
+  // `timestamp` parameter, if available. This returns whether the received
+  // frame has a timestamp.
+  bool timestamp(timespec &timestamp) const;
+
  private:
   struct Frame final {
     std::vector<uint8_t> data;
     volatile uint32_t receivedTimestamp = 0;  // Approximate arrival time
+    volatile bool hasTimestamp = false;
+    timespec timestamp{0, 0};
 
     // Clears all the data.
     void clear();

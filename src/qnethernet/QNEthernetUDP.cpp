@@ -69,6 +69,10 @@ void EthernetUDP::recvFunc(void *const arg, struct udp_pcb *const pcb,
   }
   packet.addr = *addr;
   packet.port = port;
+  packet.hasTimestamp = pNext->timestampValid;
+  if (packet.hasTimestamp) {
+    packet.timestamp = pNext->timestamp;
+  }
   packet.receivedTimestamp = timestamp;
   packet.diffServ = pcb->tos;
   packet.ttl = pcb->ttl;
@@ -256,6 +260,9 @@ void EthernetUDP::stop() {
   listening_ = false;
   listenReuse_ = false;
 
+  packet_.hasTimestamp = false;
+  packet_.timestamp.tv_sec = 0;
+  packet_.timestamp.tv_nsec = 0;
   packet_.clear();
 }
 
@@ -315,6 +322,9 @@ int EthernetUDP::parsePacket() {
   // Pop (from the tail)
   packet_ = inBuf_[inBufTail_];
   inBuf_[inBufTail_].clear();
+  inBuf_[inBufTail_].hasTimestamp = false;
+  inBuf_[inBufTail_].timestamp.tv_sec = 0;
+  inBuf_[inBufTail_].timestamp.tv_nsec = 0;
   inBufTail_ = (inBufTail_ + 1) % inBuf_.size();
   inBufSize_--;
 
@@ -376,6 +386,15 @@ IPAddress EthernetUDP::remoteIP() {
 #else
   return INADDR_NONE;
 #endif  // LWIP_IPV4
+}
+
+bool EthernetUDP::timestamp(timespec &timestamp) const {
+  // NOTE: This is not "concurrent safe"
+  if (packet_.hasTimestamp) {
+    timestamp = packet_.timestamp;
+    return true;
+  }
+  return false;
 }
 
 // --------------------------------------------------------------------------

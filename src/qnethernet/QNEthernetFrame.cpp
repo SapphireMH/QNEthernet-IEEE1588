@@ -63,6 +63,11 @@ err_t EthernetFrameClass::recvFunc(struct pbuf *const p,
   }
   frame.receivedTimestamp = timestamp;
 
+  frame.hasTimestamp = pNext->timestampValid;
+  if (frame.hasTimestamp) {
+    frame.timestamp = pNext->timestamp;
+  }
+
   // Increment the size
   if (EthernetFrame.inBufSize_ != 0 &&
       EthernetFrame.inBufTail_ == EthernetFrame.inBufHead_) {
@@ -126,6 +131,9 @@ int EthernetFrameClass::parseFrame() {
   // Pop (from the tail)
   frame_ = inBuf_[inBufTail_];
   inBuf_[inBufTail_].clear();
+  inBuf_[inBufTail_].hasTimestamp = false;
+  inBuf_[inBufTail_].timestamp.tv_sec = 0;
+  inBuf_[inBufTail_].timestamp.tv_nsec = 0;
   inBufTail_ = (inBufTail_ + 1) % inBuf_.size();
   inBufSize_--;
 
@@ -233,6 +241,15 @@ void EthernetFrameClass::setReceiveQueueCapacity(const size_t capacity) {
   qnethernet_hal_enable_interrupts();
 
   inBuf_.shrink_to_fit();
+}
+
+bool EthernetFrameClass::timestamp(timespec &timestamp) const {
+  // NOTE: This is not "concurrent safe"
+  if (frame_.hasTimestamp) {
+    timestamp = frame_.timestamp;
+    return true;
+  }
+  return false;
 }
 
 // --------------------------------------------------------------------------
