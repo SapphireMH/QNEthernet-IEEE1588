@@ -69,9 +69,9 @@ void EthernetUDP::recvFunc(void *const arg, struct udp_pcb *const pcb,
   }
   packet.addr = *addr;
   packet.port = port;
-  packet.hasTimestamp = pNext->timestampValid;
+  packet.hasTimestamp = p->timestampValid;
   if (packet.hasTimestamp) {
-    packet.timestamp = pNext->timestamp;
+    packet.timestamp = p->timestamp;
   }
   packet.receivedTimestamp = timestamp;
   packet.diffServ = pcb->tos;
