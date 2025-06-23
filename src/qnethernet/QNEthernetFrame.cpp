@@ -63,9 +63,9 @@ err_t EthernetFrameClass::recvFunc(struct pbuf *const p,
   }
   frame.receivedTimestamp = timestamp;
 
-  frame.hasTimestamp = pNext->timestampValid;
+  frame.hasTimestamp = p->timestampValid;
   if (frame.hasTimestamp) {
-    frame.timestamp = pNext->timestamp;
+    frame.timestamp = p->timestamp;
   }
 
   // Increment the size
